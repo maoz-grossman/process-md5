@@ -6,6 +6,7 @@
 // parent and child processes comunication
 // using MD5 hashing function and piping
 // to compile: gcc -o main main.c
+// to run: ./main <enter your string>
 //****************************************
 //----------------------------------------
 
