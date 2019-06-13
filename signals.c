@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <stdlib.h>
 //----------------------------------------
 //****************************************
 //              os ex 1.3
@@ -14,6 +9,13 @@
 // to run: ./signals <enter your string>
 //****************************************
 //----------------------------------------
+
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <stdlib.h>
 
 //---------------------------------------
 //          global var
