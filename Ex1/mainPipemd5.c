@@ -1,14 +1,15 @@
-//----------------------------------------
-//****************************************
-//              os ex 1.2
-//________________________________________
+//---------------------------------------------
+//*********************************************
+//                 mainPipemd5
+//_____________________________________________
 //
 // parent and child processes comunication
 // using MD5 hashing function and piping
-// to compile: gcc -o md5pipe md5pipe.c
-// to run: ./main <enter your string>
-//****************************************
-//----------------------------------------
+// to compile: gcc -o mainPipemd5 mainPipemd5.c
+// to run: ./mainPipemd5 <enter your string>
+//this is not the md5pipe function for ex1
+//**********************************************
+//----------------------------------------------
 
 #include <stdio.h> 
 #include <stdlib.h>
@@ -181,7 +182,12 @@ int main (int argc, char **argv){
     uint8_t result[16];//saves the md5 result
     char msg[MSGSIZE],inbuf[MSGSIZE]; //gets the message
     int p[2],p2[2], pid, nbytes;
-
+ 
+ //didn't get value from terminal
+    if (argc < 2) {
+        printf("usage: %s 'string'\n", argv[0]);
+        return 1;
+    }
  //tries to pipe
     if(pipe(p)<0)
         exit(1);//error
@@ -192,8 +198,11 @@ int main (int argc, char **argv){
 
     //---parent process---//
     if ((pid = fork()) > 0) {
-        printf("plain text: ");
-        scanf("%s",msg);
+        printf("\n----parent process----\n");
+        if(strlen(argv[1])>MSGSIZE)
+        exit(1);
+        strcpy(msg, argv[1]);
+        printf("the msg from the trminal is:\"%s\"\n",msg);
         write(p[1], msg, MSGSIZE); 
          close(p[1]); 
         sleep(3);
@@ -203,9 +212,11 @@ int main (int argc, char **argv){
     else if(pid==0)
     {   
         close(p[1]);
+        printf("----child process----\n");
         while ((nbytes = read(p[0], inbuf, MSGSIZE)) > 0) {}   
         if (nbytes != 0) 
             exit(2); 
+        printf("the msg:\"%s\" was piped\n",inbuf);
         // benchmark-hashing the string into result
         len = strlen(inbuf);
         for (i = 0; i < 1000000; i++) {
@@ -233,21 +244,27 @@ int main (int argc, char **argv){
             printf("need to send a signal");
         }
         //md5 works
-        else{        
+        else{
+        printf("md5 inbuf: %s\n",inbuf);        
         write(p2[1],inbuf,32);
         close(p2[1]);
         }
-        sleep(2);  
+        printf("end of child process\n"); 
+        sleep(3);  
     }
     //---parent process---//
     close(p2[1]);
     strcpy(msg,""); 
+    printf("----parent process----\n");
     while ((nbytes = read(p2[0],msg,32)) > 0){}         
     if (nbytes != 0) 
          exit(2);
     //in case it raed more than 32 bytes     
-    msg[32]='\0';                    
-    printf("encrypted by process %d : %s\n",pid,msg);        
+    msg[32]='\0';               
+    printf("msg strlen is: %ld\n",strlen(msg));     
+    printf("md5 msg:  %s\n",msg);        
+    printf("pid of child process is: %d\n",pid);
     kill(pid, SIGTERM);//killing the child process
+    printf("child process is dead whahaha >:-)\n");
 return 0;
 }
