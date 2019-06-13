@@ -6,7 +6,7 @@
 // parent and child processes comunication
 // using MD5 hashing function and piping
 // to compile: gcc -o md5pipe md5pipe.c
-// to run: ./main <enter your string>
+// to run: ./md5pipe <enter your string>
 //****************************************
 //----------------------------------------
 
